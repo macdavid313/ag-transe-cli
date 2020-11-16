@@ -37,8 +37,12 @@ def gen_rust_flags():
         stderr=subprocess.STDOUT,
     ) as out:
         stdout, _ = out.communicate()
-        flags = stdout.decode("utf-8").split()
-        return " ".join(f"-C link-arg={flag}" for flag in flags)
+        flags = " ".join(
+            f"-C link-arg={flag}" for flag in stdout.decode("utf-8").split()
+        )
+        if sys.platform == "darwin":
+            flags += "-C link-arg=-undefined -C link-arg=dynamic_lookup"
+        return flags
 
 
 def pyoxidize():
