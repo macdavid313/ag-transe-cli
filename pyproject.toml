@@ -5,7 +5,7 @@ description = "CLI tools for importing (exporting) data into (from) AllegroGraph
 authors = ["Tianyu Gu <gty@franz.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 agraph-python = "101.0.7"
 bidict = "^0.21.2"
 plac = "^1.2.0"
@@ -14,6 +14,7 @@ python-dotenv = "^0.15.0"
 pycurl = "^7.43.0"
 
 [tool.poetry.dev-dependencies]
+ipython = "^7.19.0"
 
 [tool.poetry.scripts]
 ag_transe_cli = 'ag_transe_cli.cli:main'
