@@ -12,14 +12,10 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, macOS-11.0]
+        os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
             core-tap: 'linuxbrew-core'
-          - os: macOS-latest
-            core-tap: 'homebrew-core'
-          - os: macOS-11.0
-            core-tap: 'homebrew-core'
 
     runs-on: ${{ matrix.os }}
 
