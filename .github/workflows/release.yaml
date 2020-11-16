@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+
+  release-binary:
+    name: Release Executable Binary.
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          architecture: 'x64'
+
+      - name: Cache venv
+        uses: actions/cache@v2
+        with:
+          path: venv
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-poetryenv-${{ hashFiles('poetry.lock') }}
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install -U pip setuptools
+          python -m virtualenv .venv
+          python .venv/bin/activate_this.py
+          pip install virtualenv poetry
+          poetry install
+          poetry run python -c "import sys; print(sys.version)"
+
+      - name: Poetry build
+        run: poetry build
+
+      - name: Test poetry build
+          run: |
+            python -m virtualenv .fresh_venv
+            python ./fresh_venv/bin/activate_this.py
+            pip install dist/*.whl
+
+            ag_transe_cli import -h
+
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry
+
+      - name: Executable Build
+        run: |
+          cargo install pyoxidizer --vers 0.10.3
+          python ./build.py
+          cd ./build/x86*/release/install
+          tar -zcf ../../../ag_transe_cli.tar.gz ag_transe_cli
+          cd -
+
+      - name: Test Executable
+        run: |
+          ./build/x86*/release/install/ag_transe_cli import -h
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/ag_transe_cli.tar.gz
+          asset_name: ag_transe_cli-${{ runner.os }}.tar.gz
+          asset_content_type: application/gzip
