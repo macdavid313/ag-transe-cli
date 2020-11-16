@@ -6,10 +6,11 @@ Author: Tianyu Gu (macdavid313@gmail.com)
 
 
 import os
+import stat
 import subprocess
 import sys
 from pathlib import Path
-from shutil import which
+from shutil import copyfile, which
 from string import Template
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -69,14 +70,26 @@ def pyoxidize():
 
 def make_archive():
     target_folder = list(Path(__file__).parent.joinpath("build").glob("x86_64*"))[0]
+    bin = target_folder.joinpath("release", "install", "ag_transe_cli")
+    copyfile(bin, "dist/ag-transe-cli")
+    os.chmod(
+        "dist/ag-transe-cli",
+        stat.S_IRUSR
+        | stat.S_IWUSR
+        | stat.S_IXUSR
+        | stat.S_IRGRP
+        | stat.S_IWGRP
+        | stat.S_IROTH,
+    )
     with ZipFile(f"ag_transe_cli-{sys.platform}-x86_64.zip", "w", ZIP_DEFLATED) as fp:
-        fp.write(target_folder.joinpath("release", "install", "ag_transe_cli"))
+        for file in Path(__file__).parent.joinpath("dist").iterdir():
+            fp.write(file)
 
 
 if __name__ == "__main__":
+    poetry_build()
     bzl = gen_bzl()
     os.environ["RUSTFLAGS"] = gen_rust_flags()
-    poetry_build()
     pyoxidize()
     os.remove(bzl)
     make_archive()
