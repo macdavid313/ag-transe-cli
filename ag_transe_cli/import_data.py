@@ -18,8 +18,8 @@ from bidict import bidict
 from dotenv import load_dotenv
 from franz.openrdf.model.value import URI
 from franz.openrdf.repository.repository import RepositoryConnection
+from franz.openrdf.vocabulary import RDF, RDFS
 
-import ag_transe_cli
 from ag_transe_cli.connection import AG_CONN
 
 logging.basicConfig(
@@ -70,6 +70,8 @@ def load_all_triples(
     training_data_dir: Path,
     entity2id: bidict[str, int],
     relation2id: bidict[str, int],
+    entity_type: URI,
+    relation_type: URI,
 ) -> None:
     with TemporaryDirectory() as tmp_dir:
         nt_file = Path(tmp_dir).joinpath("triples.nt")
@@ -77,9 +79,15 @@ def load_all_triples(
             pred = URI("http://example.org/embeddings#hasID")
             for ent, i in entity2id.items():
                 fp.write(
+                    f"<{ent}> {RDF.TYPE.toNTriples()} {entity_type.toNTriples()} .\n"
+                )
+                fp.write(
                     f'<{ent}> {pred.toNTriples()} "{i}"^^<http://www.w3.org/2001/XMLSchema#integer> .\n'
                 )
             for rel, i in relation2id.items():
+                fp.write(
+                    f"<{rel}> {RDF.TYPE.toNTriples()} {relation_type.toNTriples()} .\n"
+                )
                 fp.write(
                     f'<{rel}> {pred.toNTriples()} "{i}"^^<http://www.w3.org/2001/XMLSchema#integer> .\n'
                 )
@@ -120,6 +128,14 @@ def load_all_triples(
         "Namespace for relations; Only applied when relations from 'relation2id.txt' are not URIs",
         "option",
     ),
+    entity_type=(
+        "Type of entities, default to rdfs:Class if not given; Must be a valid uri",
+        "option",
+    ),
+    relation_type=(
+        "Type of relations, default to rdf:Property if not given; Must be a valid uri",
+        "option",
+    ),
 )
 def import_data(
     training_data_dir: str,
@@ -128,6 +144,8 @@ def import_data(
     save_ntriples_to: str,
     entity_uri_prefix: str,
     relation_uri_prefix: str,
+    entity_type: Optional[str],
+    relation_type: Optional[str],
 ):
     training_data_dir = Path(training_data_dir)
     if not training_data_dir.exists():
@@ -164,6 +182,20 @@ def import_data(
             training_data_dir, None, None
         )
 
+    if not entity_type:
+        entity_type = RDFS.CLASS
+    elif validators.url(entity_type):
+        entity_type = URI(entity_type)
+    else:
+        sys.exit(f"'entity_type' is not a valid uri: '{entity_type}'")
+
+    if not relation_type:
+        relation_type = RDF.PROPERTY
+    elif validators.url(relation_type):
+        relation_type = URI(relation_type)
+    else:
+        sys.exit(f"'relation_type' is not a valid uri: '{relation_type}'")
+
     if repo and not save_ntriples_to:
         if ag_env:
             ag_env = Path(ag_env)
@@ -180,7 +212,15 @@ def import_data(
 
         with AG_CONN(repo) as conn:
             logging.info("Adding all triples to '%s'", repo)
-            load_all_triples(conn, None, training_data_dir, entity2id, relation2id)
+            load_all_triples(
+                conn,
+                None,
+                training_data_dir,
+                entity2id,
+                relation2id,
+                entity_type,
+                relation_type,
+            )
             logging.info("All triples successfully loaded to '%s'", repo)
     elif save_ntriples_to and not repo:
         save_ntriples_to = Path(save_ntriples_to).absolute()
@@ -190,7 +230,13 @@ def import_data(
             )
         logging.info("Writing all triples to '%s'", save_ntriples_to)
         load_all_triples(
-            None, save_ntriples_to, training_data_dir, entity2id, relation2id
+            None,
+            save_ntriples_to,
+            training_data_dir,
+            entity2id,
+            relation2id,
+            entity_type,
+            relation_type,
         )
         logging.info(
             "All triples have been successfully written to '%s'", save_ntriples_to
