@@ -209,8 +209,11 @@ def export_data(
             f"Illegal train_size and validate_size: '{train_size}', '{validate_size}'"
         )
 
-    if random_state and not isinstance(random_state, int):
-        sys.exit("random_state must be an integer")
+    if random_state:
+        try:
+            random_state = int(random_state)
+        except Exception as _:
+            sys.exit(f"random_state must be an integer: {random_state}")
 
     if not entity_type:
         entity_type = RDFS.CLASS
