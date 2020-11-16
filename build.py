@@ -41,7 +41,7 @@ def gen_rust_flags():
             f"-C link-arg={flag}" for flag in stdout.decode("utf-8").split()
         )
         if sys.platform == "darwin":
-            flags += "-C link-arg=-undefined -C link-arg=dynamic_lookup"
+            flags += " -C link-arg=-undefined -C link-arg=dynamic_lookup"
         return flags
 
 
