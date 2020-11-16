@@ -5,7 +5,9 @@ Author: Tianyu Gu (macdavid313@gmail.com)
 """
 
 
+import bz2
 import logging
+import os
 import sys
 from pathlib import Path
 from shutil import copyfile
@@ -120,6 +122,10 @@ def load_all_triples(
         "Path to save a serialization of all triples in NTriples format; It will conflict with 'repo' if both given",
         "option",
     ),
+    compress=(
+        "If given, the saved ntriples serialization will be compressed; Only meaningful when 'save_ntriples_to' is valid",
+        "flag",
+    ),
     entity_uri_prefix=(
         "Namespace for entities; Only applied when entities from 'entity2id.txt' are not URIs",
         "option",
@@ -142,6 +148,7 @@ def import_data(
     repo: str,
     ag_env: str,
     save_ntriples_to: str,
+    compress: bool,
     entity_uri_prefix: str,
     relation_uri_prefix: str,
     entity_type: Optional[str],
@@ -238,9 +245,20 @@ def import_data(
             entity_type,
             relation_type,
         )
-        logging.info(
-            "All triples have been successfully written to '%s'", save_ntriples_to
-        )
+        if compress:
+            with bz2.open(f"{save_ntriples_to}.bz2", "w") as out:
+                with save_ntriples_to.open("rb") as fp:
+                    content = fp.read()
+                out.write(content)
+            os.remove(save_ntriples_to)
+            logging.info(
+                "All triples have been successfully written and archived to '%s.bz2'",
+                save_ntriples_to,
+            )
+        else:
+            logging.info(
+                "All triples have been successfully written to '%s'", save_ntriples_to
+            )
     else:
         sys.exit("One and only one of 'repo' and 'save_ntriples_to' must be given")
 
