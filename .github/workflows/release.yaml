@@ -29,31 +29,21 @@ jobs:
           python-version: 3.8
           architecture: 'x64'
 
-      - name: Cache venv
-        uses: actions/cache@v2
-        with:
-          path: venv
-          # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-poetryenv-${{ hashFiles('poetry.lock') }}
-
       - name: Install Dependencies
         run: |
           brew install curl
-          python -m pip install -U pip setuptools virtualenv
-          python -m virtualenv .venv
-          python .venv/bin/activate_this.py
-          pip install virtualenv poetry
+          python3 -m pip install -U pip setuptools virtualenv poetry
           poetry install
-          poetry run python -c "import sys; print(sys.version)"
+          poetry run python3 -c "import sys; print(sys.version)"
 
       - name: Poetry build
         run: poetry build
 
       - name: Test poetry build
         run: |
-          python -m virtualenv .fresh_venv
-          python ./.fresh_venv/bin/activate_this.py
-          pip install dist/*.whl
+          python3 -m virtualenv .fresh_venv
+          python3 ./.fresh_venv/bin/activate_this.py
+          python3 -m pip install dist/*.whl
           ag_transe_cli import -h
 
       - name: Cache cargo registry
