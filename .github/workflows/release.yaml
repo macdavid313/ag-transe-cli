@@ -17,7 +17,7 @@ jobs:
           - os: ubuntu-latest
             core-tap: 'linuxbrew-core'
           - os: macos-latest
-          core-tap: 'homebrew-core'
+            core-tap: 'homebrew-core'
 
     runs-on: ${{ matrix.os }}
 
