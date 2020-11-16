@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "ag-transe-cli"
+version = "0.1.0"
+description = "CLI tools for importing (exporting) data into (from) AllegroGraph"
+authors = ["Tianyu Gu <gty@franz.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+agraph-python = "101.0.7"
+bidict = "^0.21.2"
+plac = "^1.2.0"
+validators = "^0.18.1"
+python-dotenv = "^0.15.0"
+pycurl = "^7.43.0"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+ag_transe_cli = 'ag_transe_cli.cli:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
