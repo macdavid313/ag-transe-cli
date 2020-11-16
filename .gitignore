@@ -133,3 +133,5 @@ dmypy.json
 *.nt
 
 *.env
+
+*.zip

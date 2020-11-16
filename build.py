@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 from shutil import which
 from string import Template
+from zipfile import ZIP_DEFLATED, ZipFile
 
 
 def find_wheel() -> Path:
@@ -45,6 +46,13 @@ def gen_rust_flags():
         return flags
 
 
+def poetry_build():
+    if not which("poetry"):
+        sys.exit("poetry is not available")
+    os.system("poetry install")
+    os.system("poetry build")
+
+
 def pyoxidize():
     if not which("pyoxidizer"):
         sys.exit("pyoxidizer is not available")
@@ -59,8 +67,16 @@ def pyoxidize():
         sys.stdout.write(stdout.decode("utf-8"))
 
 
+def make_archive():
+    target_folder = list(Path(__file__).parent.joinpath("build").glob("x86_64*"))[0]
+    with ZipFile(f"ag_transe_cli-{sys.platform}-x86_64.zip", "w", ZIP_DEFLATED) as fp:
+        fp.write(target_folder.joinpath("release", "install", "ag_transe_cli"))
+
+
 if __name__ == "__main__":
     bzl = gen_bzl()
     os.environ["RUSTFLAGS"] = gen_rust_flags()
+    poetry_build()
     pyoxidize()
     os.remove(bzl)
+    make_archive()
