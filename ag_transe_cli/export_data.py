@@ -200,9 +200,27 @@ def export_data(
 
     if not train_size:
         train_size = 0.6
+    elif isinstance(train_size, str):
+        try:
+            train_size = float(train_size)
+            if train_size < 0.0 or train_size > 1.0:
+                sys.exit(f"train_size must be a valid float number: {train_size}")
+        except Exception as _:
+            sys.exit(f"train_size must be a valid float number: {train_size}")
+
     if not validate_size:
         validate_size = 0.2
-    test_size = 0.2
+    elif isinstance(validate_size, str):
+        try:
+            validate_size = float(validate_size)
+            if validate_size < 0.0 or validate_size > 1.0:
+                sys.exit("validate_size must be a valid float number")
+        except Exception as _:
+            sys.exit("validate_size must be a valid float number")
+
+    test_size = 1.0 - train_size - validate_size
+    if test_size < 0.0 or test_size > 1.0:
+        sys.exit("test_size must be a valid float number")
 
     if train_size + validate_size + test_size > 1.0:
         sys.exit(
