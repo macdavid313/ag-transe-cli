@@ -9,7 +9,7 @@ import logging
 import random
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 import plac
 import validators
@@ -134,7 +134,8 @@ def write_triples(output_dir: Path, fname: str, triple_ids: List[List[int]]):
 
 @plac.annotations(
     output_dir=(
-        "The directory for writing 'entity2id.txt', 'relation2id.txt', 'train2id.txt', 'valid2id.txt', 'test2id.txt'"
+        "The directory for writing 'entity2id.txt', 'relation2id.txt', 'train2id.txt', 'valid2id.txt', 'test2id.txt'",
+        "option",
     ),
     repo=(
         "Name of the repository to be populated; The repository will be re-newed if it already exists and will conflict with 'save_ntriples_to' if both given",
