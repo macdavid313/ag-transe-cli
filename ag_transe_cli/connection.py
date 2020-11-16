@@ -36,13 +36,6 @@ class AG_CONN:
         _ag_catalog = _ag_server.openCatalog(os.getenv("AGRAPH_CATALOG"))
         self._repo = _ag_catalog.getRepository(repo_name, Repository.OPEN)
         self._conn = self._repo.getConnection()
-        logging.info(
-            "Connecting to AllegroGraph Server: '%s:%s', Catalog: '%s', Repository: '%s'",
-            self._ag_conn_credential["host"],
-            self._ag_conn_credential["port"],
-            os.getenv("AGRAPH_CATALOG"),
-            repo_name,
-        )
 
     def __enter__(self):
         return self._conn
