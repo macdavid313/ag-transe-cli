@@ -214,13 +214,13 @@ def export_data(
         try:
             validate_size = float(validate_size)
             if validate_size < 0.0 or validate_size > 1.0:
-                sys.exit("validate_size must be a valid float number")
+                sys.exit(f"validate_size must be a valid float number: {validate_size}")
         except Exception as _:
-            sys.exit("validate_size must be a valid float number")
+            sys.exit(f"validate_size must be a valid float number: {validate_size}")
 
     test_size = 1.0 - train_size - validate_size
     if test_size < 0.0 or test_size > 1.0:
-        sys.exit("test_size must be a valid float number")
+        sys.exit(f"test_size must be a valid float number: {test_size}")
 
     if train_size + validate_size + test_size > 1.0:
         sys.exit(
