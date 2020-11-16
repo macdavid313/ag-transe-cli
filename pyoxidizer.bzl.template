@@ -125,9 +125,9 @@ def make_exe(dist):
     # Make the embedded interpreter behave like a `python` process.
     # python_config.config_profile = "python"
 
-    # Set initial value for `sys.path`. If the string `$ORIGIN` exists in
+    # Set initial value for `sys.path`. If the string `$$ORIGIN` exists in
     # a value, it will be expanded to the directory of the built executable.
-    python_config.module_search_paths = ["$ORIGIN/lib"]
+    python_config.module_search_paths = ["$$ORIGIN/lib"]
 
     # Use jemalloc as Python's memory allocator
     # python_config.raw_allocator = "jemalloc"
@@ -196,7 +196,7 @@ def make_exe(dist):
     # `add_python_resources()` adds these objects to the binary, with a load
     # location as defined by the packaging policy's resource location
     # attributes.
-    exe.add_python_resources(exe.pip_install(["$WHEEL_PATH"]))
+    exe.add_python_resources(exe.pip_install(["$wheel_path"]))
 
     # Invoke `pip install` using a requirements file and add the collected resources
     # to our binary.
