@@ -54,7 +54,7 @@ jobs:
       - name: Test poetry build
         run: |
           python -m virtualenv .fresh_venv
-          python ./fresh_venv/bin/activate_this.py
+          python ./.fresh_venv/bin/activate_this.py
           pip install dist/*.whl
           ag_transe_cli import -h
 
