@@ -74,7 +74,7 @@ def load_all_triples(
     with TemporaryDirectory() as tmp_dir:
         nt_file = Path(tmp_dir).joinpath("triples.nt")
         with nt_file.open("w") as fp:
-            pred = URI("http://example.org/yago/embedding#hasID")
+            pred = URI("http://example.org/embeddings#hasID")
             for ent, i in entity2id.items():
                 fp.write(
                     f'<{ent}> {pred.toNTriples()} "{i}"^^<http://www.w3.org/2001/XMLSchema#integer> .\n'
