@@ -20,4 +20,6 @@ def main():
 
         plac.call(export_data, sys.argv[2:])
     else:
-        sys.exit(f"Unknow subcommand: {sys.argv[1]}")
+        sys.exit(
+            f"Unknow subcommand: {sys.argv[1]}, there are two subcommands available, import and export"
+        )
