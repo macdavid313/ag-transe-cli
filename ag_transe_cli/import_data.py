@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 from franz.openrdf.model.value import URI
 from franz.openrdf.repository.repository import RepositoryConnection
 
+import ag_transe_cli
 from ag_transe_cli.connection import AG_CONN
 
 logging.basicConfig(
@@ -95,16 +96,16 @@ def load_all_triples(
 
 
 @plac.annotations(
-    ag_env=(
-        "A text file that has environment varibles for connecting to AllegroGraph, e.g. 'AGRAPH_HOST', 'AGRAPH_PORT'",
-        "option",
-    ),
     training_data_dir=(
         "Path to training data where it must contain 'entity2id.txt', 'relation2id.txt', 'train2id.txt', 'valid2id.txt', 'test2id.txt'",
         "option",
     ),
     repo=(
         "Name of the repository to be populated; The repository will be re-newed if it already exists and will conflict with 'save_ntriples_to' if both given",
+        "option",
+    ),
+    ag_env=(
+        "A text file that has environment varibles for connecting to AllegroGraph, e.g. 'AGRAPH_HOST', 'AGRAPH_PORT'",
         "option",
     ),
     save_ntriples_to=(
@@ -121,23 +122,13 @@ def load_all_triples(
     ),
 )
 def import_data(
-    ag_env: str,
     training_data_dir: str,
     repo: str,
+    ag_env: str,
     save_ntriples_to: str,
     entity_uri_prefix: str,
     relation_uri_prefix: str,
 ):
-    ag_env = Path(ag_env)
-    if not ag_env.exists():
-        sys.exit(f"ag_env file doesn't exist: '{ag_env.absolute()}''")
-    try:
-        load_dotenv(ag_env, verbose=True)
-    except Exception as _:
-        sys.exit(
-            f"Cannot load environment variables from ag_env file: '{ag_env.absolute()}'"
-        )
-
     training_data_dir = Path(training_data_dir)
     if not training_data_dir.exists():
         sys.exit(f"Training Data folder does not exist: {training_data_dir}")
@@ -174,6 +165,17 @@ def import_data(
         )
 
     if repo and not save_ntriples_to:
+        if ag_env:
+            ag_env = Path(ag_env)
+            if not ag_env.exists():
+                sys.exit(f"ag_env file doesn't exist: '{ag_env.absolute()}''")
+            try:
+                load_dotenv(ag_env, verbose=True)
+            except Exception as _:
+                logging.warning(
+                    f"Cannot load environment variables from ag_env file: '{ag_env.absolute()}'"
+                )
+
         AG_CONN.renew_or_create(repo)
 
         with AG_CONN(repo) as conn:
