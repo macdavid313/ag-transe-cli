@@ -258,7 +258,7 @@ def export_data(
         all_triple_ids, train_size, validate_size, random_state
     )
     write_triples(output_dir, "train2id.txt", train)
-    write_triples(output_dir, "validate2id.txt", validate)
+    write_triples(output_dir, "valid2id.txt", validate)
     write_triples(output_dir, "test2id.txt", test)
 
 
