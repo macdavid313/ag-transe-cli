@@ -155,7 +155,7 @@ To connect to AllegroGraph, users can use either enviroment variables or the `ag
 
 ### Examples of exporting
 
-* export training data to `/tmp/foo` from `foobar` repo
+* export training data to `/tmp/foo` from `foobar` repository
 
 ```bash
 > ./ag-transe-cli export -output-dir /tmp/foo -repo foobar -ag-env ag.env -train-size 0.7 -validate-size 0.15
