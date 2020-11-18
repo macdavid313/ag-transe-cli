@@ -59,7 +59,7 @@ For exmaple:
 > AGRAPH_HOST="192.168.0.100" AGRAPH_USER="user" AGRAPH_PASSWORD="password" ./ag-transe-cli import ...
 ```
 
-Users can also write these variables to a text file and use it by `-ag-env` arguments:
+Users can also write these variables to a text file and use it by `-ag-env` argument:
 
 ```bash
 > cat ag.env
@@ -114,9 +114,6 @@ Users can upload `foo.nt` directly by using `WebView` or `agload` later.
 > ./ag-transe-cli import -training-data-dir OpenKE/benchmarks/FB15K237/ -save-ntriples-to /tmp/foo.nt -compress -entity-uri-prefix "http://example.org/" -relation-uri-prefix "http://example.org/Property#"
 INFO - 18:18:53: Writing all triples to '/tmp/foo.nt'
 INFO - 18:21:02: All triples have been successfully written and archived to '/tmp/foo.nt.bz2'
-
-> ll /tmp/foo.nt.bz2
--rw-r--r--  1 user  wheel   2.4M 18 Nov 18:21 /tmp/foo.nt.bz2
 ```
 
 Users can upload `foo.nt.bz2` directly by using `WebView` or `agload` later.
@@ -156,3 +153,41 @@ To connect to AllegroGraph, users can use either enviroment variables or the `ag
 
 `-entity-type` and `-relation-type` are important, as they restrict the types of entities and relations that are extracted from the knowledge graph.
 
+### Examples of exporting
+
+* export training data to '/tmp/foo' from 'foobar' repo
+
+```bash
+> ./ag-transe-cli export -output-dir /tmp/foo -repo foobar -ag-env ag.env -train-size 0.7 -validate-size 0.15
+INFO - 18:37:23: 'entity2id.txt' has been written
+INFO - 18:37:23: 'relation2id.txt' has been written
+INFO - 18:37:37: 'train2id.txt' has been written
+INFO - 18:37:37: 'validate2id.txt' has been written
+INFO - 18:37:37: 'test2id.txt' has been written
+
+> ls /tmp/foo
+entity2id.txt    relation2id.txt  test2id.txt      train2id.txt     validate2id.txt
+```
+
+* reproduce training data by using `-random-state`
+
+```bash
+> ./ag-transe-cli export -output-dir /tmp/foo -repo foobar -ag-env ag.env -train-size 0.7 -validate-size 0.15 -random-state 42
+INFO - 18:37:23: 'entity2id.txt' has been written
+INFO - 18:37:23: 'relation2id.txt' has been written
+INFO - 18:37:37: 'train2id.txt' has been written
+INFO - 18:37:37: 'validate2id.txt' has been written
+INFO - 18:37:37: 'test2id.txt' has been written
+
+> ./ag-transe-cli export -output-dir /tmp/bar -repo foobar -ag-env ag.env -train-size 0.7 -validate-size 0.15 -random-state 42
+INFO - 18:37:23: 'entity2id.txt' has been written
+INFO - 18:37:23: 'relation2id.txt' has been written
+INFO - 18:37:37: 'train2id.txt' has been written
+INFO - 18:37:37: 'validate2id.txt' has been written
+INFO - 18:37:37: 'test2id.txt' has been written
+
+> diff -q /tmp/foo/train2id.txt /tmp/bar/train2id.txt
+
+```
+
+As indicated by `diff`, the produced `train2id.txt` files are identical.
