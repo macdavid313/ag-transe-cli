@@ -111,7 +111,7 @@ def split_triples(
 ):
     total = len(triple_ids)
     train_offset = int(total * train_size)
-    validate_offset = int((total - train_offset) * validate_size)
+    validate_offset = int(total * (train_size + validate_size))
 
     if random_state:
         random.seed(random_state)
@@ -260,3 +260,7 @@ def export_data(
     write_triples(output_dir, "train2id.txt", train)
     write_triples(output_dir, "validate2id.txt", validate)
     write_triples(output_dir, "test2id.txt", test)
+
+
+if __name__ == "__main__":
+    plac.call(export_data)
