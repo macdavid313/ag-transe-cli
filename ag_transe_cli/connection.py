@@ -20,10 +20,10 @@ logging.basicConfig(
 
 def load_ag_env() -> Dict[str, str]:
     return {
-        "host": os.getenv("AGRAPH_HOST"),
-        "port": os.getenv("AGRAPH_PORT"),
-        "user": os.getenv("AGRAPH_USER"),
-        "password": os.getenv("AGRAPH_PASSWORD"),
+        "host": os.environ.get("AGRAPH_HOST", "127.0.0.1"),
+        "port": os.environ.get("AGRAPH_PORT", "10035"),
+        "user": os.environ.get("AGRAPH_USER", ""),
+        "password": os.environ.get("AGRAPH_PASSWORD", ""),
     }
 
 
@@ -33,7 +33,7 @@ class AG_CONN:
     def __init__(self, repo_name: str):
         self._ag_conn_credential = load_ag_env()
         _ag_server = AllegroGraphServer(**self._ag_conn_credential)
-        _ag_catalog = _ag_server.openCatalog(os.getenv("AGRAPH_CATALOG"))
+        _ag_catalog = _ag_server.openCatalog(os.environ.get("AGRAPH_CATALOG", ""))
         self._repo = _ag_catalog.getRepository(repo_name, Repository.OPEN)
         self._conn = self._repo.getConnection()
 
@@ -47,7 +47,7 @@ class AG_CONN:
     @staticmethod
     def renew_or_create(repo_name: str) -> None:
         _ag_server = AllegroGraphServer(**load_ag_env())
-        _ag_catalog = _ag_server.openCatalog(os.getenv("AGRAPH_CATALOG"))
+        _ag_catalog = _ag_server.openCatalog(os.environ.get("AGRAPH_CATALOG", ""))
         try:
             if repo_name in _ag_catalog.listRepositories():
                 logging.info(f"Existing '%s' found", repo_name)
