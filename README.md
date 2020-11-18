@@ -1,6 +1,6 @@
 # ag-transe-cli
 
-A command line tool for importing or exporting data into or from AllegroGraph.
+A command line tool for importing data into or exporting data from AllegroGraph.
 
 ## Install
 
@@ -59,7 +59,7 @@ For exmaple:
 > AGRAPH_HOST="192.168.0.100" AGRAPH_USER="user" AGRAPH_PASSWORD="password" ./ag-transe-cli import ...
 ```
 
-Users can also write these variables to a text file and use it by `-ag-env` argument:
+Users can also write these variables to a text file and provide it by `-ag-env` argument:
 
 ```bash
 > cat ag.env
@@ -72,7 +72,7 @@ AGRAPH_PASSWORD=password
 > ag-transe-cli import -ag-env ag.env ...
 ```
 
-Please note that, **if the specified repository already exists, then `ag-transe-cli` will clear all current triples and initialize a fresh repository.**
+Please note that, **if the specified repository already exists, then `ag-transe-cli` will clear all current triples and initialize a fresh repository.** This implies the `AGRAPH_USER` must have the **WRITE** permission.
 
 ### Examples of importing
 
