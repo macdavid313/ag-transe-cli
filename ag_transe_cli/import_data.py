@@ -9,6 +9,7 @@ import bz2
 import logging
 import os
 import sys
+import urllib.parse
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
@@ -39,8 +40,9 @@ def get_entity2id_relation2id(
         with path.open("r") as f:
             f.readline()
             for line in f:
-                s, i = line.split()
-                if validators.url(s):
+                s, i = line.split("\t")
+                if validators.url(urllib.parse.quote(s, safe="~@#$&()*!+=:;,.?/'")):
+                    s = urllib.parse.quote(s, safe="~@#$&()*!+=:;,.?/'")
                     d[s] = int(i)
                 else:
                     if not nm:
@@ -261,7 +263,3 @@ def import_data(
             )
     else:
         sys.exit("One and only one of 'repo' and 'save_ntriples_to' must be given")
-
-
-if __name__ == "__main__":
-    plac.call(import_data)
