@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ag-transe-cli"
-version = "0.2.0"
+version = "0.3.0"
 description = "CLI tools for importing (exporting) data into (from) AllegroGraph"
 authors = ["Tianyu Gu <gty@franz.com>"]
 
