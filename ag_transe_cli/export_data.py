@@ -138,7 +138,7 @@ def write_triples(output_dir: Path, fname: str, triple_ids: List[List[int]]):
         "option",
     ),
     repo=(
-        "Name of the repository to be populated; The repository will be re-newed if it already exists and will conflict with 'save_ntriples_to' if both given",
+        "Name of the repository to be populated",
         "option",
     ),
     ag_env=(

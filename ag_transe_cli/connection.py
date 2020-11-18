@@ -20,7 +20,7 @@ logging.basicConfig(
 
 def load_ag_env() -> Dict[str, str]:
     return {
-        "host": os.environ.get("AGRAPH_HOST", "127.0.0.1"),
+        "host": os.environ.get("AGRAPH_HOST", "localhost"),
         "port": os.environ.get("AGRAPH_PORT", "10035"),
         "user": os.environ.get("AGRAPH_USER", ""),
         "password": os.environ.get("AGRAPH_PASSWORD", ""),
