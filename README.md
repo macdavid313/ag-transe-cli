@@ -9,7 +9,7 @@ Users have 2 ways to install `ag-transe-cli`:
 1. use the pre-compiled standalone executable directly: `ag-transe-cli`
 2. install by its *wheel* file: `pip install ag_transe_cli-0.0.1-py3-none-any.whl`
 
-The second way will install an executable script to your current environment. **Using a virtual environment is highly recommended.**
+The second way will install an executable script `ag_transe_cli` to your current environment. **Using a virtual environment is highly recommended.**
 
 ## Import
 
