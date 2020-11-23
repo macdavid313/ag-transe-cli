@@ -85,7 +85,7 @@ def make_archive():
         | stat.S_IROTH,
     )
     with tarfile.open(
-        f"ag_transe_cli-{sys.platform}-x86_64-dist.tar.gz", "w:gz"
+        f"ag-transe-cli-{sys.platform}-x86_64-dist.tar.gz", "w:gz"
     ) as tar:
         for file in Path(__file__).parent.joinpath("dist").iterdir():
             tar.add(file)
