@@ -9,10 +9,10 @@ import os
 import stat
 import subprocess
 import sys
+import tarfile
 from pathlib import Path
 from shutil import copyfile, which
 from string import Template
-from zipfile import ZIP_DEFLATED, ZipFile
 
 
 def find_wheel() -> Path:
@@ -51,6 +51,9 @@ def poetry_build():
     if not which("poetry"):
         sys.exit("poetry is not available")
     os.system("poetry install")
+    dist_path = Path(__file__).parent.joinpath("dist")
+    if dist_path.exists():
+        dist_path.rmdir()
     os.system("poetry build")
 
 
@@ -81,9 +84,11 @@ def make_archive():
         | stat.S_IWGRP
         | stat.S_IROTH,
     )
-    with ZipFile(f"ag_transe_cli-{sys.platform}-x86_64.zip", "w", ZIP_DEFLATED) as fp:
+    with tarfile.open(
+        f"ag_transe_cli-{sys.platform}-x86_64-dist.tar.gz", "w:gz"
+    ) as tar:
         for file in Path(__file__).parent.joinpath("dist").iterdir():
-            fp.write(file)
+            tar.add(file)
 
 
 if __name__ == "__main__":
