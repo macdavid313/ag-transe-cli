@@ -11,7 +11,7 @@ import subprocess
 import sys
 import tarfile
 from pathlib import Path
-from shutil import copyfile, which
+from shutil import copyfile, rmtree, which
 from string import Template
 
 
@@ -53,7 +53,7 @@ def poetry_build():
     os.system("poetry install")
     dist_path = Path(__file__).parent.joinpath("dist")
     if dist_path.exists():
-        dist_path.rmdir()
+        rmtree(dist_path)
     os.system("poetry build")
 
 
@@ -69,6 +69,12 @@ def pyoxidize():
         if stderr:
             sys.exit(stderr)
         sys.stdout.write(stdout.decode("utf-8"))
+
+
+def make_doc():
+    if not which("pandoc"):
+        sys.exit("pandoc is not available")
+    os.system("pandoc -s README.md -t html -o dist/doc.html")
 
 
 def make_archive():
@@ -97,4 +103,5 @@ if __name__ == "__main__":
     os.environ["RUSTFLAGS"] = gen_rust_flags()
     pyoxidize()
     os.remove(bzl)
+    make_doc()
     make_archive()
