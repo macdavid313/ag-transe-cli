@@ -1,7 +1,7 @@
 """
 File: export_data.py
 Created Date: Tuesday, 17th November 2020 3:44:50 am
-Author: Tianyu Gu (macdavid313@gmail.com)
+Author: Tianyu Gu (gty@franz.com)
 """
 
 

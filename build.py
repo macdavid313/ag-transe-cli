@@ -1,7 +1,7 @@
 """
 File: build.py
 Created Date: Monday, 16th November 2020 10:19:49 pm
-Author: Tianyu Gu (macdavid313@gmail.com)
+Author: Tianyu Gu (gty@franz.com)
 """
 
 

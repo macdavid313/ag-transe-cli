@@ -1,7 +1,7 @@
 """
 File: ag_transe_import.py
 Created Date: Monday, 16th November 2020 7:06:43 pm
-Author: Tianyu Gu (macdavid313@gmail.com)
+Author: Tianyu Gu (gty@franz.com)
 """
 
 
